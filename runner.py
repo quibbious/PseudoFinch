@@ -1,4 +1,4 @@
-from Finch import Finch
+from Finch import Errors, Finch
 
 robot = Finch("Tommy",1)
 
