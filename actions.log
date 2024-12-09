@@ -1,0 +1,13 @@
+# Below is an example of a log file. 
+# In this case, it is replaying the tests in 'runner.py'
+
+
+Finch 'Tommy' with id '1' initiated.
+Finch.beakLight(20, 20, 20).
+Finch.setMove(F,20,100)
+Finch.setMotors(100,0).
+Finch.setTail(3, 100, 50, 20).
+Finch.playNote(60, 1).
+Finch.setDisplay([1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]).
+Robot.setPoint(3, 3 ,1).
+Robot.digiPrint(TEST).
