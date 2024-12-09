@@ -1,195 +1,146 @@
-import sys
+import os
 
 class Errors:
-    """Contains many errors relating to Pseudofinch Robots"""
-    
-     
+    """handles errors experienced by the pseudofinch Finches"""
+
+    @staticmethod
     def printError(message):
-        print("\033[91m" + f"{message}" + "\033[0m")  # ANSI escape code for red text
-        sys.exit()
+        # generic error printing
+        print("\033[91m" + message + "\033[0m")  # ANSI escape code for red text
+        SystemExit()
 
-     
-    def RGBValueError():
-        Errors.printError("ValueError: invalid RGB range, must be between 0-255")
+    @staticmethod
+    def validRGB(RED: int = 0, GREEN: int = 0, BLUE: int = 0):
+        # checks if the RGB values are between 0-255
 
-     
-    def isInvalidRGBValue(R, G, B):
-        
-        if R not in range(0,256):
-            return True, Errors.RGBValueError() # return True because the value IS invalid, and return a RGBValueError.
-        elif G not in range(0,256):
-            return True, Errors.RGBValueError()
-        elif B not in range(0,256):
-            return True, Errors.RGBValueError() 
-        else:
-            return False # as in the RGB values are NOT invalid
+        COLORS = {
+            "RED": RED,
+            "GREEN": GREEN,
+            "BLUE": BLUE
+        }
 
-     
-    def directionError():
-        Errors.printError("Invalid direction; must be 'F' or 'B'.")
-     
-    def MissingRobotError():
-        Errors.printError("No robot detected; please specify a robot.")
-    
-    def SpeedValueError():
-        Errors.printError("ValueError: Speed must be between 1-100")
+        for COLOR in COLORS:
+            if COLORS[COLOR] not in range(256):
+                Errors.printError(f"COLOR {COLOR} ({COLORS[COLOR]}) is not between 0-255.")
+                return False
+            else:
+                return True
 
-class Robot:
-    
-    """Constructor that creates an object corresponding to a Robot, as well as a corresponding ID"""
-    
-    def __init__(robot, name, id):
-        robot.name = name
-        robot.id = id 
-        if not robot.name:
-            Errors.MissingRobotError()
-     
-    def BeakLight(self,R, G, B):
-        """Sets a tri-color LED in the Robot beak to a given color by setting the intensities of the red, green, and blue elements inside it.
-    The method requires three intensity values from 0-255. Setting all three intensity values to 0 turns the beak off.
-        Example: Robot.setBeak(0,100,0)"""
-        Errors.isInvalidRGBValue(R,G,B) #checks if the values are invalid
-        
-        BeakLight = (R,G,B)
-        
-        return BeakLight
-     
-    def setMove(self,direction=str, distance=int, speed=int):
-        
-        """Moves the robot forward 'F', or backwards 'B', followed by a distance in cm and a speed from 1-100.
-        Example: Robot.setMove(‘F’,10,50)"""
+
+class Finch:
+    """Main class for the MANY functions of a pseudofinch Finch"""
+    global beakColor, tailColor
+    global logFile
+    beakColor = []
+    tailColor = []
+    if os.path.exists("cmds.log"):
+        os.remove("cmds.log")
+    logFile = open("cmds.log", "a")
+
+    def __init__(self, name: str = None, Finch_id: int = None) -> None:
+        self.name = name
+        self.Finch_id = Finch_id
+        logFile.write(f"Finch '{name}' with id '{Finch_id}' initiated.\n")
+        if not name:
+            Errors.printError("No Finch name; please specify a Finch.")
+
+    def beakLight(self, RED: int = 0, GREEN: int = 0, BLUE: int = 0):
+        """Sets a tri-color LED in the Finch beak to a given color by setting the intensities of the red, green, and blue elements inside it. The method requires three intensity values from 0-255. Setting all three intensity values to 0 turns the beak off.
+        \n Example: Finch.setBeak(0,100,0)"""
+
+        Errors.validRGB()
+        logFile.write(f"Finch.beakLight({RED}, {GREEN}, {BLUE}).\n")
+        beakColor = [RED, GREEN, BLUE]
+        return [RED, GREEN, BLUE]
+
+    def setMove(self, direction: str = 'F', distance: int = 0, speed: int = 0):
+        """Moves the Finch forward 'F', or backwards 'B', followed by a distance in cm and a speed from 1-100.
+        \n Example: Finch.setMove(‘F’,10,50)"""
+
         direction = direction.upper()
-        if direction not in ('F','B'):
-            
-            Errors.printError(f"SyntaxError: invalid movement direction {direction}")
-            
-        if speed not in range(1,101):
-           
-            Errors.SpeedValueError()
-        
-        if distance < 1: 
-            
-            Errors.printError("ValueError: distance cannot be below one (1)")
-        
+
+        if direction not in ('F', 'B'): Errors.printError("Invalid direction; must be 'F' or 'B'.")
+        if speed not in range(101): Errors.printError("Speed must be 1-100")
+        if distance < 1: Errors.printError("Distance cannot be below one")
+        logFile.write(f"Finch.setMove({direction},{distance},{speed})\n")
         return direction, distance, speed
-     
-    def setTurn(self,direction=str, angle=int, speed=int):
-        """Turns the Robot right or left for a specified angle at a specified speed.
-        The method requires a direction (‘R’ for right or ‘L’ for left), an angle in degrees, and a speed from 0-100.
-        Example: Robot.setTurn(‘R’,90,50)"""
+
+    def setTurn(self, direction: str = 'R', angle: int = 0, speed: int = 0):
+        """Turns the Finch right or left for a specified angle at a specified speed. The method requires a direction (‘R’ for right or ‘L’ for left), an angle in degrees, and a speed from 0-100.
+        \n Example: Finch.setTurn(‘R’,90,50)"""
+
         direction = direction.upper()
-        if direction not in ('L','R'): 
-            Errors.printError(f"SyntaxError: invalid direction '{direction}'")
-        
-        if speed not in range (0,101):
-            Errors.printError("ValueError: invalid speed, must be between 0-100")
-            
-        if not angle in range(1,361): # 360 degree limit per command 
-            Errors.printError("ValueError: Angle out of range; must be 1-360")
 
-        if direction == 'L':
-            invertedangle = -1  * angle
-            return direction, invertedangle, speed
-        
-        return direction, angle, speed
-     
-    def setMotors(self, L: int, R: int):
-        """Sets the Robot wheels to spin at the given speeds.
-        Requires two speeds between -100 and 100 for the left and right wheels.
-        Setting the speed to 0 turns the motor off.
-        Example: Robot.setMotors(-50, 50)
-        """
-        if not (-100 <= L <= 100) or not (-100 <= R <= 100):
-            Errors.printError("Speed must be between -100 and 100")
-    
-        return [L, R]
-    
-    def setTail(self,port, r, g, b):
-        """Sets a tri-color LED in the Robot tail to a given color by setting the intensities of the red, green, and blue elements inside it.
-        The method requires the port number of the LED (1, 2, 3, 4, or “all”) and three intensity values from 0-100. 
-        Setting all three intensity values to 0 turns the LED off.
-        Example: Robot.setTail(“all”,0,100,0)"""
-    
-        if port != 1 or 2 or 3 or 4 or 'all':
-            Errors.printError("SyntaxError: invalid selection; check docstring for instructions")
+        if speed not in range(101): Errors.printError("Invalid speed, must be 0-100")
+        if angle not in range(1, 361): Errors.printError("Angle out of range; must be 1-360")
 
-        Errors.isInvalidRGBValue(r,g,b)
+        match direction:
+            case ('L'):
+                return direction, -angle, speed
+            case ('R'):
+                return direction, angle, speed
+            case _:
+                return Errors.printError(f"invalid direction '{direction}'")
+        logFile.write(f"Finch.setMove({direction},{angle},{speed}).\n")
 
-        tailvaluesRGB = [port,r,g,b]
-        
-        return tailvaluesRGB
-    
-     
-    def playNote(self,note: int,beats: int):
-        """Plays a note using the buzzer on the Robot.
-        The method requires an integer representing the note (32-135) and a number giving the number of beats (0-16). 
-        One beat corresponds to one second.
-        Example: Robot.playNote(60,0.5)"""
-        
-        if note not in range(31,136):
-            Errors.printError("ValueError: note must be in range 32-135")
-        
-        
-        if beats not in range(0,17):
-            Errors.printError("ValueError: beat must be in range 0-16")
+    def setMotors(self, LEFT: int = 0, RIGHT: int = 0):
+        """Sets the Finch wheels to spin at the given speeds. Requires two speeds between -100 and 100 for the left and right wheels. Setting the speed to 0 turns the motor off.
+        \n Example: Finch.setMotors(-100, 100)"""
+        if not all(-100 <= speed <= 100 for speed in (LEFT, RIGHT)): Errors.printError(
+            "Speed must be between -100 and 100")
+        logFile.write(f"Finch.setMotors({LEFT},{RIGHT}).\n")
+        return [LEFT, RIGHT]
 
-        options = [note,beats]
+    def setTail(self, port, RED: int = 0, GREEN: int = 0, BLUE: int = 0):
+        """Sets a tri-color LED in the Finch tail to a given color by setting the intensities of the red, green, and blue elements inside it. The method requires the port number of the LED (1, 2, 3, 4, or “all”) and three intensity values from 0-100.  Setting all three intensity values to 0 turns the LED off.
+        \n Example: Finch.setTail(“all”,0,100,0)"""
+        if port not in (1, 2, 3, 4, 'all'):
+            Errors.printError(f"invalid port {port}; check docstring for instructions")
 
-        return options
-    
-     
-    def setDisplay(self, LEDlist):
-        """Sets the LED array of the micro:bit to display a pattern defined by a list of length 25. 
-        Each value in the list must be 0 (off) or 1 (on). 
-        The first five values in the array correspond to the five LEDs in the first row, the next five values to the second row, etc.
-        Example: robot.setDisplay([1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1])"""
-        # Validate input LEDlist
-        if len(LEDlist) != 25:
-            raise ValueError("LEDlist must have a length of 25")
-        for value in LEDlist:
-            if value not in (0, 1):
-                raise ValueError("Each value in LEDlist must be 0 (off) or 1 (on)")
+        Errors.validRGB(RED, GREEN, BLUE)
+        logFile.write(f"Finch.setTail({port}, {RED}, {GREEN}, {BLUE}).\n")
+        tailColor = [port, RED, GREEN, BLUE]
+        return [port, RED, GREEN, BLUE]
 
-        return LEDlist
+    def playNote(self, note, beats):
+        """Plays a note using the buzzer on the Finch. The method requires an integer representing the note (32-135) and a number giving the number of beats (0-16). One beat corresponds to one second.
+        \n Example: Finch.playNote(60,0.5)"""
+        if note not in range(32, 136):
+            Errors.printError(f"playNote: note ({note}) must be in range 32-135")
+        if beats not in range(1, 17):
+            Errors.printError(f"playNote: beats ({beats}) must be in range 0-16")
+        logFile.write(f"Finch.playNote({note}, {beats}).\n")
+        return [note, beats]
 
-     
-    def setPoint(self, LEDlist, row, column, value):
-        """Turn on or off a single LED on the micro:bit display. The position of the LED is given by the row and column parameters, which should both be between 1 and 5.
-        The value of the LED must be 0 (off) or 1 (on).
-        Example:  robot.setPoint(3,3,1)"""
-        # Validate row and column
-        #if row and column not in (1, 2, 3, 4, 5):
-        #    raise ValueError("Row and column values must be between 1 and 5")
-        
-        if row not in (1,2,3,4,5):
-            raise ValueError("Row value must be between 1 and 5")
+    def setDisplay(self, LEDlist: list = None):
+        """Sets the LED array of the micro:bit to display a pattern defined by a list of length 25.  Each value in the list must be 0 (off) or 1 (on). The first five values in the array correspond to the five LEDs in the first row, the next five values to the second row, etc.
+        \n Example: Finch.setDisplay([1,1,1,1,1,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,1,1,1,1,1])"""
+        if len(LEDlist) == 25 and (state_led in (0, 1) for state_led in LEDlist):
+            logFile.write(f"Finch.setDisplay({LEDlist}).\n")
+            return LEDlist
+        else:
+            Errors.printError("setDisplay: list is either not 25 in length or not 0s and 1s")
 
-        if column not in (1, 2, 3, 4, 5):
-            raise ValueError("Column value must be between 1 and 5")
-        # Convert row and column to index in LED array
-        index = (row - 1) * 5 + (column - 1)
-
-        # Validate value
+    def setPoint(self, row, column, value):
+        """Turn on or off a single LED on the micro:bit display. The position of the LED is given by the row and column parameters, which should both be between 1 and 5. The value of the LED must be 0 (off) or 1 (on).
+        \n Example:  robot.setPoint(3,3,1)"""
+        if not (1 <= row <= 5) or not (1 <= column <= 5):
+            raise ValueError("Row and column values must be between 1 and 5")
         if value not in (0, 1):
             raise ValueError("Value must be 0 (off) or 1 (on)")
 
-        # Update LED array
+        index = (row - 1) * 5 + (column - 1)
+        LEDlist = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  # completely empty list
         LEDlist[index] = value
+        logFile.write(f"Robot.setPoint({row}, {column} ,{value}).\n")
         return LEDlist
-     
+
     def digiPrint(self, message):
-        """Print a string on the micro:bit LED array.
-        The string must contain onlyEnglish letters. strings will default to uppercase if lowercase.
-        Example: robot.digiPrint("Hello World")
-        input string = 'Hello World'
-        interpreted string = 'HELLO WORLD'
-        *will break and glitch after 20 chars, including whitespace.
-        """
-        
-        if len(message) > 20: 
-            Errors.printError("message length cannot be more than 20.") # Because it glitches out past 20 chars. dont know why yet. 
-        
-        message.upper
+        """Print a string on the micro:bit LED array. The string must contain only English letters. strings will default to uppercase if lowercase. *will break and glitch after 20 chars, including whitespace.
+        \n Example: robot.digiPrint("Hello World")"""
+        if len(message) > 20:
+            Errors.printError("Message length cannot be more than 20.")
+
         alphabet = {
             'A': ['   1 1     ', ' 1     1   ', ' 1     1   ', ' 1 1 1 1   ', ' 1     1   '],
             'B': [' 1 1 1     ', ' 1     1   ', ' 1 1 1     ', ' 1     1   ', ' 1 1 1     '],
@@ -232,18 +183,11 @@ class Robot:
             '/': ['         11', '       11  ', '     11    ', '   11      ', ' 11        '],
             '*': ['     1     ', '   1 1 1   ', '     1     ', '           ', '           '],
             '=': ['           ', ' 1 1 1 1 1 ', '           ', ' 1 1 1 1 1 ', '           '],
-            
-            
-            
         }
-    
+
         for row in range(5):
-            for char in message:
-                if char.upper() in alphabet:
-                    print(alphabet[char.upper()][row], end=' ')
-                else:
-                    print('     ', end=' ') # optional to replace whitespace with 0's 
+            for char in message.upper():
+                print(alphabet.get(char, ['     '])[row], end=' ')
             print()
-        return True, "message printed"
-
-
+        logFile.write(f"Robot.digiPrint({message}).\n")
+        return True  # for tests
