@@ -33,9 +33,9 @@ class Finch:
     global logFile
     beakColor = []
     tailColor = []
-    if os.path.exists("cmds.log"):
-        os.remove("cmds.log")
-    logFile = open("cmds.log", "a")
+    if os.path.exists("actions.log"):
+        os.remove("actions.log")
+    logFile = open("actions.log", "a")
 
     def __init__(self, name: str = None, Finch_id: int = None) -> None:
         self.name = name
