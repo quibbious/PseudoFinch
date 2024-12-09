@@ -1,4 +1,4 @@
-from fwrite import Finch
+from Finch import Finch
 
 robot = Finch("Tommy",1)
 
