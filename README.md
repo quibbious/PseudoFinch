@@ -6,7 +6,7 @@ Simulates most functions of the BirdBrain Technologies Finch 2.0 Robot.
 
 ## Documentation
 
-[Documentation](https://quarksay.github.io/PseudoFinch-py/)
+[Documentation](https://quarksay.github.io/PseudoFinch/)
 
 # Constructors: 
 ## Method Signature: Finch()
