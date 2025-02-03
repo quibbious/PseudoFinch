@@ -10,7 +10,7 @@ class Errors:
         SystemExit()
 
     @staticmethod
-    def validRGB(RED: int = 0, GREEN: int = 0, BLUE: int = 0):
+    def isValidRGB(RED: int = 0, GREEN: int = 0, BLUE: int = 0):
         # checks if the RGB values are between 0-255
 
         COLORS = {
@@ -48,7 +48,7 @@ class Finch:
         """Sets a tri-color LED in the Finch beak to a given color by setting the intensities of the red, green, and blue elements inside it. The method requires three intensity values from 0-255. Setting all three intensity values to 0 turns the beak off.
         \n Example: Finch.setBeak(0,100,0)"""
 
-        Errors.validRGB()
+        Errors.isValidRGB()
         logFile.write(f"Finch.beakLight({RED}, {GREEN}, {BLUE}).\n")
         beakColor = [RED, GREEN, BLUE]
         return [RED, GREEN, BLUE]
@@ -97,7 +97,7 @@ class Finch:
         if port not in (1, 2, 3, 4, 'all'):
             Errors.printError(f"invalid port {port}; check docstring for instructions")
 
-        Errors.validRGB(RED, GREEN, BLUE)
+        Errors.isValidRGB(RED, GREEN, BLUE)
         logFile.write(f"Finch.setTail({port}, {RED}, {GREEN}, {BLUE}).\n")
         tailColor = [port, RED, GREEN, BLUE]
         return [port, RED, GREEN, BLUE]
