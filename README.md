@@ -3,6 +3,9 @@
 
 Simulates most functions of the BirdBrain Technologies Finch 2.0 Robot.
 
+## Installation
+`pip install pseudofinch==1.0.0`
+`from pseudofinch import Finch`
 
 ## Documentation
 
