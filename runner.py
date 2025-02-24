@@ -1,6 +1,6 @@
 from Finch import Errors, Finch
 
-robot = Finch("Tommy",1)
+robot = Finch("Hampton",1)
 
 tests = {
 
