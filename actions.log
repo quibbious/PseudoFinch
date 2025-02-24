@@ -2,7 +2,7 @@
 # In this case, it is replaying the tests in 'runner.py'
 
 
-Finch 'Tommy' with id '1' initiated.
+Finch 'Hampton' with id '1' initiated.
 Finch.beakLight(20, 20, 20).
 Finch.setMove(F,20,100)
 Finch.setMotors(100,0).
