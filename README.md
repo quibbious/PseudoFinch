@@ -8,10 +8,6 @@ as of Python 3.12:
 `pip install pseudofinch==1.0.0`
 `import pseudofinch.Finch as pseudofinch`
 
-## Documentation
-
-...
-
 # Constructors: 
 ## Method Signature: Finch()
     Description: Constructor that creates an object corresponding to a Finch.
@@ -32,7 +28,7 @@ as of Python 3.12:
     Example: myFinch.setMotors(-50,50)
 
 ## Method Signature: stop()
-    deprecated :(
+    deprecated
 
 ## Method Signature: setBeak(redIntensity, greenIntensity, blueIntensity)
     Description: Sets a tri-color LED in the Finch beak to a given color by setting the intensities of the red, green, and blue elements inside it. The method requires three intensity values from 0-100. Setting all three intensity values to 0 turns the beak off.
